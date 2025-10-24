@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Grading System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input, button {
+      margin: 8px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Student Grading System</h1>
+  <form id="gradeForm">
+    <input type="text" id="name" placeholder="Student Name" required><br>
+    <input type="number" id="sub1" placeholder="Subject 1 Marks" required>
+    <input type="number" id="sub2" placeholder="Subject 2 Marks" required>
+    <input type="number" id="sub3" placeholder="Subject 3 Marks" required><br>
+    <button type="submit">Calculate Grade</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("gradeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const marks = [
+        Number(document.getElementById("sub1").value),
+        Number(document.getElementById("sub2").value),
+        Number(document.getElementById("sub3").value)
+      ];
+
+      const res = await fetch("/calculate-grade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, marks })
+      });
+
+      const data = await res.json();
+      document.getElementById("result").innerHTML =
+        `${data.name}'s Total: ${data.total}, Average: ${data.average.toFixed(2)}, Grade: <b>${data.grade}</b>`;
+    });
+  </script>
+</body>
+</html>
