@@ -1,0 +1,28 @@
+// server.js
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+
+const app = express();
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+app.post("/calculate-grade", (req, res) => {
+  const { name, marks } = req.body;
+  let total = 0;
+  marks.forEach(m => total += m);
+
+  const average = total / marks.length;
+  let grade;
+
+  if (average >= 90) grade = "A+";
+  else if (average >= 80) grade = "A";
+  else if (average >= 70) grade = "B";
+  else if (average >= 60) grade = "C";
+  else grade = "Fail";
+
+  res.json({ name, total, average, grade });
+});
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
